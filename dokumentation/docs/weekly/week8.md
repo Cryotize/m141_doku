@@ -124,6 +124,20 @@ ALTER
     AS select_statement;
 ```
 
+### Sakila actor_info
+
+Auftrag ist es, herauszufinden wie der "actor_info" View erstellt wurde, bzw. welcher CREATE Befehl dahinter Steckt.
+
+Herausfinden können wir mittels folgendem SQL Befehl:
+```sql
+SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = 'actor_info'
+```
+
+Der CREATE Befehl welcher ausgegeben wurde sieht wie folgt aus:
+```sql
+CREATE OR REPLACE VIEW actor_info AS SELECT `a`.`actor_id` AS `actor_id`,`a`.`first_name` AS `first_name`,`a`.`last_name` AS `last_name`,group_concat(DISTINCT concat(`c`.`name`,': ',(SELECT group_concat(`f`.`title` ORDER BY `f`.`title` ASC separator ', ') FROM ((`film` `f` JOIN `film_category` `fc` ON((`f`.`film_id` = `fc`.`film_id`))) JOIN `film_actor` `fa` ON((`f`.`film_id` = `fa`.`film_id`))) WHERE ((`fc`.`category_id` = `c`.`category_id`) AND (`fa`.`actor_id` = `a`.`actor_id`)))) ORDER BY `c`.`name` ASC separator '; ') AS `film_info` FROM (((`actor` `a` LEFT JOIN `film_actor` `fa` ON((`a`.`actor_id` = `fa`.`actor_id`))) LEFT JOIN `film_category` `fc` ON((`fa`.`film_id` = `fc`.`film_id`))) LEFT JOIN `category` `c` ON((`fc`.`category_id` = `c`.`category_id`))) GROUP BY `a`.`actor_id`,`a`.`first_name`,`a`.`last_name`;
+```
+
 ## Stored Procedures
 
 ### Erklärung
