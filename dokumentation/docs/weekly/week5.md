@@ -6,7 +6,11 @@ In MySQL gibt es verschiedene Datentypen, ählich wie wir es aus Java bereits ke
 
 Zwei Spezialtypen werde ich hier beschreiben:
 
+### JSON
+
 JSON kann als Objekt oder als Array verwendet werden. So kann im Array eine Liste von Werten, separiert von einem Komma gespeichert werden. Falls man es als Objekt verwendet so können Key-Value Paare gespeichert werden. Vorteile gegenüber dem Speichern vom JSON Format in Strings ist die automatische überprüfung wie auch eine Optimierung vom Speicherformat. 
+
+### ENUM
 
 ENUM ist ein String Objekt welches nur einen Wert besitzen kann welches von einer Liste von möglichen Werte ausgewählt wird. Es können maximal 65535 verschiedene Werte zur Auswahl stehen, falls etwas eingegeben wird welches nicht in dieser Liste vorkommt bleibt das Feld leer.
 
