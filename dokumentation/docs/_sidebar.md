@@ -11,6 +11,11 @@
     * [Woche 7](weekly/week7.md)
     * [Woche 8](weekly/week8.md)
     * [Woche 9](weekly/week9.md)
+    * [Woche 10](weekly/week10.md)
+    * [Woche 11](weekly/week11.md)
+    * [Woche 12](weekly/week12.md)
+    * [Woche 13](weekly/week13.md)
+    * [Woche 14](weekly/week14.md)
 
 * [Weitere Übungen]()
 

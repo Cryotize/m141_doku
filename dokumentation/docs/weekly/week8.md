@@ -146,6 +146,8 @@ Stored Procedures sind in der theorie einfach erklärt. In einer Datenbank kann 
 
 Mehr dazu inklusive Beispiel [hier](https://www.javatpoint.com/mysql-procedure)
 
+Aufruf mittels ```CALL procedure_name(parameter)```
+
 ### Anzeigen
 
 Möchten wir die Stored Procedures unserer DB einsehen, so können wir dies mit folgendem Command:

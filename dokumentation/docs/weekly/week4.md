@@ -133,6 +133,16 @@ mysql> SELECT @@transaction_ISOLATION;
 
 Für uns bedeutet dies in diesem Fall das "Phantom Read" möglich ist. Das heisst also, dass Suchkriterien auf unterschiedliche Datensätze zutreffen aufgrund von laufenden Transkationen welche Datensätze entfernt, hinzugefügt oder verändert hat.
 
+Änderung des Levels mittels folgendem Command möglich:
+
+```sql
+SET TRANSACTION ISOLATION LEVEL lvl;
+```
+
+Hier eine übersicht:
+
+![Transaction Lvl Screenshot](../img/transaction_lvl.png)
+
 ### System-Variablen
 
 Um alle System-Variablen in einem schönen gefiltertem Output zu erhalten muss man folgenden Command verwenden:
