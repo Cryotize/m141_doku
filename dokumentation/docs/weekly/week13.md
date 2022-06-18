@@ -1,6 +1,146 @@
-# Übungen Indexierung, Performance, Sharding und Replication
+# Übungen Datenbankdesign, Indexierung, Performance, Sharding und Replication
 
 <!-- tabs:start -->
+
+## **Datenbankdesign MongoDB**
+
+## Datenbankdesign MongoDB
+
+Hier das wichtigste auf einen Blick:
+
+- Embedded Dokumente sollten bevorzugt werden, ausser es gibt gute Gründe dagegen
+- Falls es möglich sein sollte, ein Dokument einzeln anzeigen lassen zu können, so kann man sich dagegen entscheiden
+- Joins oder Lookups sollten vermieden werden, ausser sie verbessern das Schema. So kann man gleich mit Referenzen arbeiten.
+- Nested Arrays nicht unendlich gross laufen lassen
+- Für Many-to-Many muss mit Referenzen gearbeitet werden
+- Dokumente auf Grössen limitieren
+
+Folgende Abbildung werden wir hier einmal Embedded erstellen aber auch mit Referencing:
+
+![Beispiel Modell](../img/relational-user-model.png)
+
+### Embedding:
+
+Die Umsetzung via Embedding könnte so aussehen:
+
+```js
+{
+    "first_name": "Paul",
+    "surname": "Miller",
+    "cell": "447557505611",
+    "city": "London",
+    "location": [45.123, 47.232],
+    "profession": ["banking", "finance", "trader"],
+    "cars": [
+        {
+            "model": "Bentley",
+            "year": 1973
+        },
+        {
+            "model": "Rolls Royce",
+            "year": 1965
+        }
+    ]
+}
+```
+
+Man sieht, alles ist in einem Dokument.
+
+### Referencing
+
+Mit Referencing wird das ganze schwieriger, hier arbeiten wir mit zwei Collections:
+
+Collection orders:
+
+```js
+db.orders.insertMany( [
+   { "_id" : 1, "item" : "almonds", "price" : 12, "quantity" : 2 },
+   { "_id" : 2, "item" : "pecans", "price" : 20, "quantity" : 1 },
+   { "_id" : 3  }
+] )
+```
+
+Collection inventory:
+
+```js
+db.inventory.insertMany( [
+   { "_id" : 1, "sku" : "almonds", "description": "product 1", "instock" : 120 },
+   { "_id" : 2, "sku" : "bread", "description": "product 2", "instock" : 80 },
+   { "_id" : 3, "sku" : "cashews", "description": "product 3", "instock" : 60 },
+   { "_id" : 4, "sku" : "pecans", "description": "product 4", "instock" : 70 },
+   { "_id" : 5, "sku": null, "description": "Incomplete" },
+   { "_id" : 6 }
+] )
+```
+
+Mittels Lookup können wir nun die beiden Collections referenzieren:
+
+```js
+db.orders.aggregate( [
+   {
+     $lookup:
+       {
+         from: "inventory",
+         localField: "item",
+         foreignField: "sku",
+         as: "inventory_docs"
+       }
+  }
+] )
+```
+
+Ergibt folgenden Output:
+
+```js
+{
+   "_id" : 1,
+   "item" : "almonds",
+   "price" : 12,
+   "quantity" : 2,
+   "inventory_docs" : [
+      { "_id" : 1, "sku" : "almonds", "description" : "product 1", "instock" : 120 }
+   ]
+}
+{
+   "_id" : 2,
+   "item" : "pecans",
+   "price" : 20,
+   "quantity" : 1,
+   "inventory_docs" : [
+      { "_id" : 4, "sku" : "pecans", "description" : "product 4", "instock" : 70 }
+   ]
+}
+{
+   "_id" : 3,
+   "inventory_docs" : [
+      { "_id" : 5, "sku" : null, "description" : "Incomplete" },
+      { "_id" : 6 }
+   ]
+}
+```
+
+### Fazit
+
+#### Vorteile von $lookup:
+
+- Kleinere Dokumente
+- Dokumente können kleiner als 16MB sein (limit)
+- Wenn die referenzierten Daten nicht oft geladen werden, kann dies ein Vorteil sein
+- Die Redundanzen in den Daten werden reduziert
+
+#### Nachteile:
+
+- Abfragen werden viel komplizierter
+
+#### Vorteile von Embedding
+
+- In einer Query sind alle Daten geladen
+- Keine joins / lookups / referencing
+- ALLE CRUD Operationen in einem Dokument sind ACID-Kompatibel
+
+#### Nachteile
+
+- Grosse Querys können bei vielen doppelten Daten zu grossem Overhead und somit Performance Reduktion führen.
 
 ## **Indexierung und Performance**
 
