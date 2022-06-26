@@ -17,6 +17,7 @@
     * [Woche 13](weekly/week13.md)
     * [Woche 14](weekly/week14.md)
 
-* [Weitere Übungen]()
+* [Weiteres]()
 
     * [Backup & Migration](other/backup.md)
+    * [LB2 Fragen](other/lb2_fragen.md)
